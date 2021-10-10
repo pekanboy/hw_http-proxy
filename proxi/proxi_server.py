@@ -60,7 +60,7 @@ class ProxiServer:
         raw_url = data.split(' ')[1]
         url = urlparse(raw_url)
 
-        data.replace(raw_url, url.path, 1)
+        data = data.replace(raw_url, url.path, 1)
 
         result = []
 
