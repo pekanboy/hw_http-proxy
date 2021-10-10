@@ -10,6 +10,7 @@ class ProxiServer:
         self._host = host
 
         self._socket = socket.socket()
+        self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._socket.bind((host, port))
 
         self._active_children = set()
@@ -43,17 +44,17 @@ class ProxiServer:
 
         data = self.get_data(conn)
 
-        request, host, port = self.format_data(data)
+        request, host, port = self.format_data(data.decode())
 
         response = self.send_data(request, host, port)
 
-        conn.send(response.encode('utf-8'))
+        conn.send(response)
 
         conn.close()
         os._exit(0)
 
     def get_data(self, conn):
-        data = conn.recv(1024).decode('utf-8')
+        data = conn.recv(4056)
         return data
 
     def format_data(self, data: str):
